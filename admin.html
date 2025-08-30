@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin — Import catalogue</title>
+  <link rel="icon" href="assets/logo.svg">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand"><img class="logo" src="assets/logo.svg" alt="Seconde Vie"> <span>Seconde Vie</span></a>
+      <strong>Admin — Import catalogue</strong>
+    </div>
+  </header>
+  <main class="container" style="padding:24px 0 60px;">
+    <h1>Importer votre catalogue</h1>
+    <p>Depuis votre projet « <em>description d’articles</em> », copiez le JSON de vos articles et collez-le ici, ou importez un CSV avec colonnes : <code>sku,titre,prix,tva,image,categorie,description,taille,etat,marque,genre,stock</code>.</p>
+    <div class="grid" style="grid-template-columns: 1fr 1fr;">
+      <section>
+        <h3>Depuis JSON</h3>
+        <textarea id="jsonInput" style="width:100%;height:220px;" placeholder='[{"sku":"...","titre":"...","prix":12.5,"tva":20,"image":"https://...","categorie":"...","description":"...","taille":"M","etat":"Bon","marque":"...","genre":"...","stock":1}]'></textarea>
+        <button id="applyJson" class="button primary" style="margin-top:10px;">Remplacer le catalogue (products.json)</button>
+      </section>
+      <section>
+        <h3>Depuis CSV</h3>
+        <input id="csvFile" type="file" accept=".csv" />
+        <button id="applyCsv" class="button" style="margin-top:10px;">Convertir en products.json</button>
+      </section>
+    </div>
+    <div id="result" class="notice" style="margin-top:16px; display:none;"></div>
+  </main>
+  <footer class="footer">
+    <div class="container">
+      © <span id="year"></span> Seconde Vie — <a href="mentions-legales.html">Mentions légales</a> • <a href="cgv.html">CGV</a> • <a href="admin.html">Admin</a>
+    </div>
+  </footer>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function downloadJSON(data, filename) {
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+    }
+    function parseCSV(text) {
+      const lines = text.split(/\r?\n/).filter(Boolean);
+      if (!lines.length) return [];
+      const headers = lines[0].split(',').map(h=>h.trim());
+      const rows = lines.slice(1).map(l => {
+        // handle commas inside quotes basic
+        const cols = []; let cur = ''; let inQ = false;
+        for (let i=0;i<l.length;i++){ const ch=l[i];
+          if (ch=='"'){ inQ=!inQ; continue; }
+          if (ch==',' && !inQ){ cols.push(cur); cur=''; } else { cur+=ch; }
+        }
+        cols.push(cur);
+        const obj = {};
+        headers.forEach((h, i)=> obj[h] = (cols[i]||'').trim());
+        return obj;
+      });
+      return rows;
+    }
+    function normalizeProduct(p) {
+      return {
+        sku: p.sku || '',
+        titre: p.titre || '',
+        prix: Number(p.prix || 0),
+        tva: Number(p.tva || 20),
+        image: p.image || '',
+        categorie: p.categorie || '',
+        description: p.description || '',
+        taille: p.taille || '',
+        etat: p.etat || '',
+        marque: p.marque || '',
+        genre: p.genre || '',
+        stock: Number(p.stock || 1)
+      };
+    }
+    document.getElementById('applyJson').addEventListener('click', function(){
+      try {
+        const arr = JSON.parse(document.getElementById('jsonInput').value || '[]');
+        const norm = Array.isArray(arr) ? arr.map(normalizeProduct) : [];
+        if (!norm.length) throw new Error('JSON vide ou invalide');
+        downloadJSON(norm, 'products.json');
+        const r = document.getElementById('result'); r.style.display='block'; r.textContent='products.json généré avec ' + norm.length + ' articles. Remplacez le fichier à la racine du site.';
+      } catch(e) { alert('Erreur JSON : ' + e.message); }
+    });
+    document.getElementById('applyCsv').addEventListener('click', function(){
+      const file = document.getElementById('csvFile').files[0];
+      if (!file) { alert('Choisissez un fichier CSV.'); return; }
+      const reader = new FileReader();
+      reader.onload = function(){
+        const rows = parseCSV(reader.result);
+        const norm = rows.map(normalizeProduct);
+        if (!norm.length) { alert('CSV vide.'); return; }
+        downloadJSON(norm, 'products.json');
+        const r = document.getElementById('result'); r.style.display='block'; r.textContent='products.json généré avec ' + norm.length + ' articles. Remplacez le fichier à la racine du site.';
+      };
+      reader.readAsText(file, 'utf-8');
+    });
+  </script>
+</body>
+</html>

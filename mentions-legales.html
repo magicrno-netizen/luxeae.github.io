@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mentions légales — Seconde Vie</title>
+  <link rel="icon" href="assets/logo.svg">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand"><img class="logo" src="assets/logo.svg" alt="Seconde Vie"> <span>Seconde Vie</span></a>
+    </div>
+  </header>
+  <main class="container" style="padding:24px 0 60px;">
+    <h1>Mentions légales</h1>
+    <p class="muted">Modèle à personnaliser — Dernière mise à jour : <span id="maj"></span></p>
+    <h3>Éditeur du site</h3>
+    <p>Dénomination / Nom : <strong>Votre nom</strong><br>Forme juridique : <strong>ex : EI / SARL / Association</strong><br>Siège social : <strong>Votre adresse</strong><br>Contact : <strong>votre@email.tld</strong> — <strong>votre numéro</strong><br>N° SIREN/SIRET : <strong>à compléter</strong></p>
+    <h3>Hébergeur</h3>
+    <p>Nom : <strong>à compléter</strong> — Adresse : <strong>à compléter</strong> — Téléphone : <strong>à compléter</strong></p>
+    <h3>Propriété intellectuelle</h3>
+    <p>Contenus et marques protégés. Toute reproduction non autorisée est interdite.</p>
+    <h3>Données personnelles</h3>
+    <p>Données traitées pour la gestion des commandes et du service client. Droits RGPD : accès, rectification, effacement.</p>
+  </main>
+  <footer class="footer">
+    <div class="container">
+      © <span id="year"></span> Seconde Vie — <a href="mentions-legales.html">Mentions légales</a> • <a href="cgv.html">CGV</a> • <a href="admin.html">Admin</a>
+    </div>
+  </footer>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('maj').textContent = new Date().toLocaleDateString('fr-FR');
+  </script>
+</body>
+</html>

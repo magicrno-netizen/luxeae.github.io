@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seconde Vie — Paiement (PayPal)</title>
+  <link rel="icon" href="assets/logo.svg">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand"><img class="logo" src="assets/logo.svg" alt="Seconde Vie"> <span>Seconde Vie</span></a>
+      <a class="button ghost" href="index.html">← Continuer mes achats</a>
+      <span class="badge" id="cart-count">0</span>
+    </div>
+  </header>
+
+  <main class="container" style="padding:24px 0 60px;">
+    <h1>Paiement</h1>
+    <div class="main" style="grid-template-columns: 2fr 1fr;">
+      <section>
+        <h3>Coordonnées</h3>
+        <div class="grid" style="grid-template-columns: 1fr 1fr;">
+          <label>Prénom <input id="firstName" required></label>
+          <label>Nom <input id="lastName" required></label>
+          <label style="grid-column: span 2;">Email <input id="email" type="email" required></label>
+          <label style="grid-column: span 2;">Adresse <input id="address" required></label>
+          <label>Code postal <input id="zip" required></label>
+          <label>Ville <input id="city" required></label>
+        </div>
+
+        <h3 style="margin-top:20px;">Livraison</h3>
+        <label><input type="radio" name="ship" value="standard" checked> Standard (3–5 jours) — 4,90 €</label><br>
+        <label><input type="radio" name="ship" value="express"> Express (24–48h) — 9,90 €</label>
+        <div class="notice">Livraison <strong>gratuite</strong> dès 99 € TTC (le port passe automatiquement à 0 €).</div>
+
+        <h3 style="margin-top:20px;">Payer avec PayPal</h3>
+        <div id="paypal-button-container"></div>
+        <div class="notice">Astuce : ajoute <code>?paypal_client_id=VOTRE_ID</code> à l’URL, ou édite <code>config.json</code> pour définir votre Client ID (Sandbox/Live).</div>
+      </section>
+
+      <aside class="cart">
+        <h3>Résumé</h3>
+        <div id="cart-items"></div>
+        <div class="summary">
+          <div class="row"><span>Sous-total</span><strong id="subtotal">0,00 €</strong></div>
+          <div class="row"><span>TVA estimée</span><span id="vat">0,00 €</span></div>
+          <div class="row"><span>Livraison</span><span id="shipping">4,90 €</span></div>
+          <div class="row total"><span>Total</span><span id="total">0,00 €</span></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      © <span id="year"></span> Seconde Vie — <a href="mentions-legales.html">Mentions légales</a> • <a href="cgv.html">CGV</a> • <a href="admin.html">Admin</a>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    async function getPayPalClientId() {
+      const urlParams = new URLSearchParams(location.search);
+      const qid = urlParams.get('paypal_client_id');
+      if (qid) return qid;
+      try {
+        const cfg = await fetch('config.json').then(r=>r.json());
+        if (cfg.paypalClientId && !cfg.paypalClientId.includes('PASTE_')) return cfg.paypalClientId;
+      } catch(e) {}
+      return '';
+    }
+    function loadPayPal(clientId) {
+      if (!clientId) {
+        const box = document.getElementById('paypal-button-container');
+        box.innerHTML = '<div class="notice">⚠️ Client ID PayPal manquant. Ajoutez <code>?paypal_client_id=...</code> à l’URL ou éditez <code>config.json</code>.</div>';
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(clientId) + '&currency=EUR&intent=CAPTURE';
+      script.onload = renderButtons;
+      document.body.appendChild(script);
+    }
+    function parseEUR(text) { return Number(text.replace(/[^0-9,.-]/g,'').replace(',', '.')) || 0; }
+    function renderButtons() {
+      if (!window.paypal) return;
+      paypal.Buttons({
+        style: { layout: 'vertical', shape: 'pill' },
+        createOrder: function(data, actions) {
+          const totalText = document.getElementById('total').textContent;
+          const value = parseEUR(totalText).toFixed(2);
+          return actions.order.create({ purchase_units: [{ amount: { value, currency_code: 'EUR' }, description: 'Commande Seconde Vie' }] });
+        },
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(function(details) {
+            // Enregistrer la commande pour export
+            try {
+              const cart = JSON.parse(localStorage.getItem('cart')||'[]');
+              const total = document.getElementById('total').textContent;
+              const subtotal = document.getElementById('subtotal').textContent;
+              const vat = document.getElementById('vat').textContent;
+              const shipping = document.getElementById('shipping').textContent;
+              const buyer = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                address: document.getElementById('address').value,
+                zip: document.getElementById('zip').value,
+                city: document.getElementById('city').value
+              };
+              const order = {
+                date: new Date().toISOString(),
+                payment_id: details.id || '',
+                items: cart.map(i => i.sku + ' x' + i.qte).join(' | '),
+                total_ttc: total,
+                subtotal_ht: subtotal,
+                tva: vat,
+                shipping: shipping,
+                buyer_name: buyer.firstName + ' ' + buyer.lastName,
+                buyer_email: buyer.email,
+                buyer_address: buyer.address + ', ' + buyer.zip + ' ' + buyer.city
+              };
+              const orders = JSON.parse(localStorage.getItem('orders')||'[]');
+              orders.push(order);
+              localStorage.setItem('orders', JSON.stringify(orders));
+            } catch (e) { console.warn('Save order failed', e); }
+            localStorage.setItem('lastOrderTotal', document.getElementById('total').textContent);
+            localStorage.removeItem('cart');
+            window.location.href = 'success.html';
+          });
+        },
+        onError: function(err) { alert('Erreur PayPal: ' + (err && err.message ? err.message : err)); }
+      }).render('#paypal-button-container');
+    }
+    (async function initPayPal(){ const id = await getPayPalClientId(); loadPayPal(id); })();
+  </script>
+</body>
+</html>

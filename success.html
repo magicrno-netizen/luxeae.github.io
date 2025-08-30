@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seconde Vie — Confirmation</title>
+  <link rel="icon" href="assets/logo.svg">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand"><img class="logo" src="assets/logo.svg" alt="Seconde Vie"> <span>Seconde Vie</span></a>
+    </div>
+  </header>
+
+  <main class="container" style="padding:24px 0 60px;">
+    <h1>Merci pour votre commande ♻️</h1>
+    <p>Votre paiement PayPal a été confirmé.</p>
+    <div class="notice">Montant payé : <strong id="amount">0,00 €</strong></div>
+    <div style="margin:12px 0;">
+      <button id="exportOrders" class="button">Exporter commandes (CSV)</button>
+    </div>
+    <a class="button primary" href="index.html">Retour à la boutique</a>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      © <span id="year"></span> Seconde Vie — <a href="mentions-legales.html">Mentions légales</a> • <a href="cgv.html">CGV</a> • <a href="admin.html">Admin</a>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('amount').textContent = localStorage.getItem('lastOrderTotal') || '0,00 €';
+
+    function toCSV(rows) {
+      if (!rows.length) return '';
+      const headers = Object.keys(rows[0]);
+      const esc = v => '"' + String(v).replace(/"/g,'""') + '"';
+      const lines = [headers.join(',')].concat(rows.map(r => headers.map(h => esc(r[h] ?? '')).join(',')));
+      return lines.join('\n');
+    }
+    document.getElementById('exportOrders').addEventListener('click', function(){
+      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      if (!orders.length) { alert('Aucune commande à exporter.'); return; }
+      const csv = toCSV(orders);
+      const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'commandes.csv';
+      a.click();
+    });
+  </script>
+</body>
+</html>

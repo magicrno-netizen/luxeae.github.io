@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seconde Vie — Boutique</title>
+  <link rel="icon" href="assets/logo.svg">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand"><img class="logo" src="assets/logo.svg" alt="Seconde Vie"> <span>Seconde Vie</span></a>
+      <input id="q" type="search" class="select" placeholder="Rechercher (marque, taille, état...)" aria-label="Recherche">
+      <a class="button ghost" href="checkout.html"><span class="icon">🧾</span>&nbsp;Commander</a>
+      <span class="badge" id="cart-count">0</span>
+    </div>
+  </header>
+
+  <main class="container main">
+    <section>
+      <h1>Vêtements de seconde main</h1>
+      <div class="filters">
+        <label>Catégorie
+          <select id="filter-categorie"></select>
+        </label>
+        <label>Taille
+          <select id="filter-taille"><option value="">Toutes</option></select>
+        </label>
+        <label>État
+          <select id="filter-etat"><option value="">Tous</option><option>Très bon</option><option>Bon</option><option>Correct</option></select>
+        </label>
+        <label>Marque
+          <select id="filter-marque"><option value="">Toutes</option></select>
+        </label>
+        <label>Trier par
+          <select id="sort">
+            <option value="pop">Pertinence</option>
+            <option value="price-asc">Prix croissant</option>
+            <option value="price-desc">Prix décroissant</option>
+            <option value="alpha">Alphabétique</option>
+          </select>
+        </label>
+      </div>
+      <div id="grid" class="grid" aria-live="polite"></div>
+    </section>
+
+    <aside class="cart" aria-label="Panier">
+      <h3>Panier</h3>
+      <div id="cart-items"></div>
+      <div class="summary">
+        <div class="row"><span>Sous-total</span><strong id="subtotal">0,00 €</strong></div>
+        <div class="row"><span>TVA estimée</span><span id="vat">0,00 €</span></div>
+        <div class="row total"><span>Total (livraison incluse)</span><span id="total">0,00 €</span></div>
+      </div>
+      <div id="free-ship-badge" class="notice" style="display:none;"></div>
+      <p class="notice">Chaque article est unique (stock 1). Paiement via PayPal à l’étape suivante.</p>
+      <a class="button primary" href="checkout.html">Passer la commande</a>
+    </aside>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      © <span id="year"></span> Seconde Vie — <a href="mentions-legales.html">Mentions légales</a> • <a href="cgv.html">CGV</a> • <a href="admin.html">Admin</a>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

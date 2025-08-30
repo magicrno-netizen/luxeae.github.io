@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CGV — Seconde Vie</title>
+  <link rel="icon" href="assets/logo.svg">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand"><img class="logo" src="assets/logo.svg" alt="Seconde Vie"> <span>Seconde Vie</span></a>
+    </div>
+  </header>
+  <main class="container" style="padding:24px 0 60px;">
+    <h1>Conditions Générales de Vente (CGV)</h1>
+    <p class="muted">Modèle à personnaliser — Dernière mise à jour : <span id="maj"></span></p>
+    <h3>1. Objet</h3>
+    <p>Les présentes CGV régissent les ventes de produits de seconde main proposées sur le site « Seconde Vie ».</p>
+    <h3>2. Vendeur</h3>
+    <p>Dénomination : <strong>Votre entreprise / association</strong><br>Adresse : <strong>Votre adresse</strong><br>Email : <strong>votre@email.tld</strong> — Téléphone : <strong>votre numéro</strong><br>N° SIREN/SIRET : <strong>à compléter</strong></p>
+    <h3>3. Produits</h3>
+    <p>Articles de seconde main, pièces uniques. Les photos et descriptions visent à refléter l’état réel.</p>
+    <h3>4. Prix</h3>
+    <p>Les prix sont TTC. <strong>Livraison gratuite dès 99 € TTC</strong> (appliquée automatiquement).</p>
+    <h3>5. Commande et paiement</h3>
+    <p>Paiement via PayPal. Confirmation affichée et/ou envoyée par email (selon configuration).</p>
+    <h3>6. Livraison</h3>
+    <p>Expédition sous 2 à 5 jours ouvrés. Standard 3–5 j, Express 24–48 h.</p>
+    <h3>7. Rétractation</h3>
+    <p>Délai de 14 jours, sauf exceptions légales. Frais de retour à la charge du client.</p>
+    <h3>8. Garanties</h3>
+    <p>Produits d’occasion vendus en l’état indiqué. Garanties légales applicables.</p>
+    <h3>9. Données personnelles</h3>
+    <p>Données utilisées pour traiter la commande et le service client.</p>
+    <h3>10. Litiges</h3>
+    <p>Droit français — tribunaux compétents du siège du vendeur.</p>
+  </main>
+  <footer class="footer">
+    <div class="container">
+      © <span id="year"></span> Seconde Vie — <a href="mentions-legales.html">Mentions légales</a> • <a href="cgv.html">CGV</a> • <a href="admin.html">Admin</a>
+    </div>
+  </footer>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('maj').textContent = new Date().toLocaleDateString('fr-FR');
+  </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: Inter, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: #111; background: #fafafa; line-height: 1.5; }
+a { color: inherit; text-decoration: none; }
+.container { max-width: 1140px; margin: 0 auto; padding: 0 16px; }
+
+.header { position: sticky; top: 0; z-index: 10; backdrop-filter: saturate(180%) blur(10px); background: rgba(255,255,255,.8); border-bottom: 1px solid #eee; }
+.header-inner { display: flex; align-items: center; gap: 16px; padding: 10px 0; }
+.header .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+.header img.logo { height: 32px; }
+.badge { background: #111; color: #fff; border-radius: 999px; padding: 6px 10px; font-size: 14px; }
+.button { display: inline-flex; align-items: center; justify-content: center; border: 1px solid #111; border-radius: 10px; padding: 10px 14px; font-weight: 600; cursor: pointer; transition: transform .05s ease, box-shadow .1s ease, background .2s ease; }
+.button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,.08); }
+.button.primary { background: #111; color: #fff; border-color: #111; }
+.button.ghost { background: white; }
+.icon { font: 16px/1 'Apple Color Emoji', 'Segoe UI Emoji'; }
+
+.main { display: grid; grid-template-columns: 1fr 360px; gap: 24px; padding: 24px 0 60px; }
+@media (max-width: 980px) { .main { grid-template-columns: 1fr; } .cart { position: sticky; bottom: 0; } }
+
+.filters { display: flex; gap: 12px; align-items: center; margin: 14px 0 4px; flex-wrap: wrap; }
+.select, select, input[type=search] { appearance: none; border: 1px solid #e5e5e5; padding: 10px 12px; border-radius: 10px; background: #fff; font-size: 14px; }
+
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+@media (max-width: 980px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+
+.card { background: #fff; border: 1px solid #eee; border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; transition: box-shadow .15s ease, transform .08s ease; }
+.card:hover { box-shadow: 0 10px 26px rgba(0,0,0,.06); transform: translateY(-1px); }
+.card img { width: 100%; height: 220px; object-fit: cover; background: #f7f7f7; }
+.card-body { padding: 12px; display: grid; gap: 8px; }
+.card-title { font-weight: 700; display:flex; justify-content: space-between; align-items:center; }
+.badge-sm { font-size: 12px; background: #e9f5ee; border: 1px solid #cfe3d7; color: #0f5132; padding: 4px 8px; border-radius: 999px; }
+.price { font-weight: 700; }
+.muted { color: #666; font-size: 14px; }
+
+.cart { background: #fff; border: 1px solid #eee; border-radius: 14px; padding: 16px; position: sticky; top: 76px; max-height: calc(100vh - 100px); overflow: auto; }
+.cart h3 { margin: 0 0 8px; }
+.cart-item { display: grid; grid-template-columns: 56px 1fr auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px dashed #eee; }
+.cart-item img { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; }
+.qty { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #eee; border-radius: 10px; padding: 4px 8px; }
+.qty button { border: none; background: none; cursor: pointer; font-size: 18px; padding: 0 6px; }
+.summary { margin-top: 12px; display: grid; gap: 6px; }
+.summary .row { display: flex; justify-content: space-between; }
+.total { font-weight: 800; font-size: 18px; }
+.notice { background: #f8f8f8; border: 1px dashed #ddd; padding: 10px 12px; border-radius: 8px; font-size: 13px; color: #555; }
+.footer { border-top: 1px solid #eee; padding: 18px 0; color: #666; font-size: 14px; }
+.footer a { text-decoration: underline; }
